@@ -1,0 +1,11 @@
+.sidebar {
+  flex: 3;
+  margin: 20px;
+  padding-bottom: 30px;
+  background-color: #fdfbdb;
+  border-radius: 10px;
+  display: flex;
+  font-display: column;
+  align-items: center;
+
+}
