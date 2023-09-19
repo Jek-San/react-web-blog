@@ -1,16 +1,31 @@
+import { Link, useLocation } from "react-router-dom"
 import "./singlePost.css"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import moment from "moment"
 
 export default function SinglePost() {
+  const [post, setPost] = useState({})
+
+  const location = useLocation()
+  const path = location.pathname.split("/")[2]
+  useEffect(() => {
+    const fetchPost = async () => {
+      const res = await axios.get(`/posts/${path}`)
+      setPost(res.data)
+    }
+
+    fetchPost()
+  }, [path])
+
   return (
     <div className="singlePost">
       <div className="singlePostWrapper">
-        <img
-          className="singlePostImg"
-          src=" https://images.pexels.com/photos/17824719/pexels-photo-17824719/free-photo-of-burung-air-hewan-aliran.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          alt=""
-        />
+        {post?.photo && (
+          <img className="singlePostImg" src={post.photo} alt="" />
+        )}
         <h1 className="singlePostTitle">
-          Lorem ipsum dolor sit amet.
+          {post.title}
           <div className="singlePostEdit">
             <i className=" singlePostIcon fa-regular fa-pen-to-square"></i>
             <i className=" singlePostIcon fa-regular fa-trash-can"></i>
@@ -18,57 +33,16 @@ export default function SinglePost() {
         </h1>
         <div className="singlePostInfo">
           <span className="singlePostAuthor">
-            Author: <b>Jack</b>
+            Author:
+            <Link className="link" to={`/?user=${post.username}`}>
+              <b>{post.username}</b>
+            </Link>
           </span>
-          <span className="singlePostDate">1 hour ago</span>
+          <span className="singlePostDate">
+            {moment(post.createdAt).fromNow()}
+          </span>
         </div>
-        <p className="singlePostDesc">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis alias
-          amet expedita at ab fugit vel id vero impedit dolore eaque ipsa nisi,
-          cupiditate enim possimus molestias voluptas, sint ullam! Lorem ipsum
-          dolor sit amet consectetur adipisicing elit. Quis alias amet expedita
-          at ab fugit vel id vero impedit dolore eaque ipsa nisi, cupiditate
-          enim possimus molestias voluptas, sint ullam! Lorem ipsum dolor sit
-          amet consectetur adipisicing elit. Quis alias amet expedita at ab
-          fugit vel id vero impedit dolore eaque ipsa nisi, cupiditate enim
-          possimus molestias voluptas, sint ullam! Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Quis alias amet expedita at ab fugit vel
-          id vero impedit dolore eaque ipsa nisi, cupiditate enim possimus
-          molestias voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam! Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quis alias amet expedita at ab fugit vel id vero
-          impedit dolore eaque ipsa nisi, cupiditate enim possimus molestias
-          voluptas, sint ullam!
-        </p>
+        <p className="singlePostDesc">{post.desc}</p>
       </div>
     </div>
   )

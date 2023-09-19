@@ -11,6 +11,10 @@ import {
   Route,
   Outlet,
 } from "react-router-dom"
+import { Provider, useDispatch } from "react-redux";
+import store from "./redux/store"
+
+
 const user = false;
 const Layout = () => {
   return (
@@ -70,12 +74,15 @@ const router = createBrowserRouter([
 ])
 
 function App() {
+
   return (
-    <div className="app">
-      <div className="container">
-        <RouterProvider router={router} />
+    <Provider store={store}>
+      <div className="app">
+        <div className="container">
+          <RouterProvider router={router} />
+        </div>
       </div>
-    </div>
+    </Provider>
   )
 }
 

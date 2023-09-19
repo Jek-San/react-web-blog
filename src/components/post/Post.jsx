@@ -1,35 +1,26 @@
 import "./post.css"
+import { Link } from "react-router-dom"
+import moment from "moment"
 
-export default function Post() {
+export default function Post({ post }) {
   return (
     <div className="post">
-      <img
-        className="postImg"
-        src=" https://images.pexels.com/photos/10208449/pexels-photo-10208449.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-        alt="postImg"
-      />
+      {post.photo && <img className="postImg" src={post.photo} alt="postImg" />}
       <div className="postInfo">
         <div className="postCats">
-          <span className="postCat">Music</span>
-          <span className="postCat">Life</span>
+          {post.categories.map((cat) => (
+            <span className="postCat">{cat.name}</span>
+          ))}
         </div>
-        <span className="postTitle">Lorem ipsum dolor sit amet.</span>
+        <Link to={`/post/${post._id}`} className="link">
+          <span className="postTitle">{post.title}</span>
+        </Link>
         <hr />
-        <span className="postDate">1 hour ago</span>
+        <span className="postDate">
+          {moment(post.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+        </span>
       </div>
-      <p className="postDesc">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat
-        impedit odio ab illum cumque, debitis in quasi quis natus voluptas
-        itaque sunt error ea optio similique animi id aliquam. Aut. ipsum dolor
-        sit amet, consectetur adipisicing elit. Placeat impedit odio ab illum
-        cumque, debitis in quasi quis natus voluptas itaque sunt error ea optio
-        similique animi id aliquam. Aut. ipsum dolor sit amet, consectetur
-        adipisicing elit. Placeat impedit odio ab illum cumque, debitis in quasi
-        quis natus voluptas itaque sunt error ea optio similique animi id
-        aliquam. Aut. ipsum dolor sit amet, consectetur adipisicing elit.
-        Placeat impedit odio ab illum cumque, debitis in quasi quis natus
-        voluptas itaque sunt error ea optio similique animi id aliquam. Aut.
-      </p>
+      <p className="postDesc">{post?.desc}</p>
     </div>
   )
 }

@@ -34,6 +34,9 @@
 
 .sidebarItem>img {
   margin-top: 15px;
+  max-width: 300px;
+  height: 250px;
+  object-fit: cover;
 }
 
 .sidebarItem>p {
@@ -65,5 +68,5 @@
 .sidebarIcon {
   font-size: 16px;
   margin-left: 10px;
-  cursor:pointer;
+  cursor: pointer;
 }
