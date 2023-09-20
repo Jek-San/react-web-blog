@@ -1,37 +1,63 @@
 import { Link, useNavigate } from "react-router-dom"
 import "./login.css"
-import { useDispatch } from "react-redux"
-import { loginUser } from "../../redux/userSlice"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  loginUser,
+  loginUserFailure,
+  loginUserRequest,
+  loginUserSuccess,
+  selectError,
+  selectIsFetching,
+} from "../../redux/userSlice"
 import { useState } from "react"
 import axios from "axios"
 
 export default function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [usernameOrEmail, setUsernameorEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState(false)
+
+  const [formData, setFormData] = useState({
+    usernameOrEmail: "",
+    password: "",
+  })
+
+  const { usernameOrEmail, password } = formData
+  const errorState = useSelector(selectError)
+  const isFetching = useSelector(selectIsFetching)
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
-    setError(false)
+    dispatch(loginUserRequest())
+
     if (!usernameOrEmail || !password) {
-      setError(true)
+      dispatch(loginUserFailure("Please enter username and password"))
       return // Don't proceed with the login if fields are empty
     }
+
     try {
       const res = await axios.post("/auth/login", {
         usernameOrEmail: usernameOrEmail,
         password: password,
       })
-      dispatch(loginUser(res.data))
+      dispatch(loginUserSuccess(res.data))
       localStorage.setItem("userData", JSON.stringify(res.data))
 
       res.data && navigate("/")
     } catch (err) {
-      setError(true)
+      dispatch(
+        loginUserFailure("Login Failed. Please check your credential", err)
+      )
     }
   }
-  console.log(usernameOrEmail)
+
   return (
     <div className="login">
       <span className="loginTitle">Login</span>
@@ -39,28 +65,28 @@ export default function Login() {
         <label>Username/Email</label>
         <input
           type="text"
+          name="usernameOrEmail"
+          value={usernameOrEmail}
           placeholder="Enter your email or username..."
-          onChange={(e) => {
-            setUsernameorEmail(e.target.value)
-          }}
+          onChange={handleInputChange}
         />
         <label>Password</label>
         <input
           type="password"
+          name="password"
+          value={password}
           placeholder="Enter your password..."
-          onChange={(e) => {
-            setPassword(e.target.value)
-          }}
+          onChange={handleInputChange}
         />
-        <button className="loginButton" type="submit">
-          Login
+        <button className="loginButton" type="submit" disabled={isFetching}>
+          {isFetching ? "Logging in..." : "Login"}
         </button>
         <button className="loginRegisterButton">
           <Link to={"/register"} className="link">
             Register
           </Link>
         </button>
-        <span>User Or Password is Incorect</span>
+        {errorState && <span>{errorState}</span>}
       </form>
     </div>
   )

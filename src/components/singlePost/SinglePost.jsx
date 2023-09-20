@@ -3,9 +3,14 @@ import "./singlePost.css"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import moment from "moment"
+import { useSelector } from "react-redux"
+import { selectUserData } from "../../redux/userSlice"
 
 export default function SinglePost() {
+  const PF = "http://localhost:8800/images/"
+
   const [post, setPost] = useState({})
+  const userData = useSelector(selectUserData)
 
   const location = useLocation()
   const path = location.pathname.split("/")[2]
@@ -18,18 +23,38 @@ export default function SinglePost() {
     fetchPost()
   }, [path])
 
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/posts/${post._id}`, {
+        data: { username: userData.username },
+      })
+      window.location.replace("/")
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  console.log(post._id)
+  const handleEdit = async () => {}
   return (
     <div className="singlePost">
       <div className="singlePostWrapper">
         {post?.photo && (
-          <img className="singlePostImg" src={post.photo} alt="" />
+          <img className="singlePostImg" src={PF + post.photo} alt="" />
         )}
         <h1 className="singlePostTitle">
           {post.title}
-          <div className="singlePostEdit">
-            <i className=" singlePostIcon fa-regular fa-pen-to-square"></i>
-            <i className=" singlePostIcon fa-regular fa-trash-can"></i>
-          </div>
+          {post.username === userData?.username && (
+            <div className="singlePostEdit">
+              <i
+                className=" singlePostIcon fa-regular fa-pen-to-square"
+                onClick={handleEdit}
+              ></i>
+              <i
+                className=" singlePostIcon fa-regular fa-trash-can"
+                onClick={handleDelete}
+              ></i>
+            </div>
+          )}
         </h1>
         <div className="singlePostInfo">
           <span className="singlePostAuthor">
