@@ -8,9 +8,12 @@ import { selectUserData } from "../../redux/userSlice"
 
 export default function SinglePost() {
   const PF = "http://localhost:8800/images/"
+  const userData = useSelector(selectUserData)
 
   const [post, setPost] = useState({})
-  const userData = useSelector(selectUserData)
+  const [title, setTitle] = useState("")
+  const [desc, setDesc] = useState("")
+  const [updateMode, setUpdateMode] = useState(false)
 
   const location = useLocation()
   const path = location.pathname.split("/")[2]
@@ -18,6 +21,8 @@ export default function SinglePost() {
     const fetchPost = async () => {
       const res = await axios.get(`/posts/${path}`)
       setPost(res.data)
+      setTitle(res.data.title)
+      setDesc(res.data.desc)
     }
 
     fetchPost()
@@ -28,34 +33,78 @@ export default function SinglePost() {
       await axios.delete(`/posts/${post._id}`, {
         data: { username: userData.username },
       })
-      window.location.replace("/")
+      setUpdateMode(false)
     } catch (err) {
       console.log(err)
     }
   }
-  console.log(post._id)
-  const handleEdit = async () => {}
+
+  const handleEdit = async () => {
+    setUpdateMode(true)
+  }
+
+  const handleReset = (e) => {
+    setTitle(post.title)
+    setDesc(post.desc)
+  }
+
+  const handleSubmitUpdate = async () => {
+    try {
+      await axios.put(`/posts/${post._id}`, {
+        username: userData.username,
+        title: title,
+        desc: desc,
+      })
+      window.location.reload()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <div className="singlePost">
       <div className="singlePostWrapper">
         {post?.photo && (
           <img className="singlePostImg" src={PF + post.photo} alt="" />
         )}
-        <h1 className="singlePostTitle">
-          {post.title}
-          {post.username === userData?.username && (
-            <div className="singlePostEdit">
+        {updateMode ? (
+          <>
+            <input
+              type="text"
+              className="singlePostTitleInput"
+              value={title}
+              autoFocus
+              onChange={(e) => {
+                setTitle(e.target.value)
+              }}
+            />
+            <div className="singlePostEdit updateMode">
               <i
-                className=" singlePostIcon fa-regular fa-pen-to-square"
-                onClick={handleEdit}
+                class="singlePostIcon fa-solid fa-rotate-right"
+                onClick={handleReset}
               ></i>
-              <i
-                className=" singlePostIcon fa-regular fa-trash-can"
-                onClick={handleDelete}
-              ></i>
+              <button className="singlePostButton" onClick={handleSubmitUpdate}>
+                Update
+              </button>
             </div>
-          )}
-        </h1>
+          </>
+        ) : (
+          <h1 className="singlePostTitle">
+            {post.title}
+            {post.username === userData?.username && (
+              <div className="singlePostEdit">
+                <i
+                  className=" singlePostIcon fa-regular fa-pen-to-square"
+                  onClick={handleEdit}
+                ></i>
+                <i
+                  className=" singlePostIcon fa-regular fa-trash-can"
+                  onClick={handleDelete}
+                ></i>
+              </div>
+            )}
+          </h1>
+        )}
         <div className="singlePostInfo">
           <span className="singlePostAuthor">
             Author:
@@ -67,7 +116,17 @@ export default function SinglePost() {
             {moment(post.createdAt).fromNow()}
           </span>
         </div>
-        <p className="singlePostDesc">{post.desc}</p>
+        {updateMode ? (
+          <textarea
+            className="singlePostDescInput"
+            value={desc}
+            onChange={(e) => {
+              setDesc(e.target.value)
+            }}
+          />
+        ) : (
+          <p className="singlePostDesc">{post.desc}</p>
+        )}
       </div>
     </div>
   )

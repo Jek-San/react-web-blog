@@ -25,9 +25,11 @@ const userSlice = createSlice({
     },
 
 
+
     loginUser: (state, action) => {
       // Update the user state with the action payload (user data)
       state.userData = action.payload;
+
     },
     logoutUser: (state) => {
       state.userData = null;

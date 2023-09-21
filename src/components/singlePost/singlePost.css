@@ -5,7 +5,8 @@
 .singlePostWrapper {
   padding: 20px;
   padding-right: 0;
-
+  display: flex;
+  flex-direction: column;
 }
 
 .singlePostImg {
@@ -20,6 +21,38 @@
   margin: 10px;
   font-family: 'Lora', serif;
   font-size: 28px;
+}
+
+.singlePostTitleInput {
+  margin: 10px;
+  font-family: "Lora", serif;
+  font-size: 28px;
+  border: none;
+  border-bottom: 1px solid gray;
+}
+
+
+/* updateMode */
+.updateMode {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+}
+
+.singlePostButton {
+  border: none;
+  background-color: teal;
+  border-radius: 10px;
+  margin-left: 10px;
+  width: 100px;
+  height: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+.singlePostTitleInput:focus {
+  outline: none;
 }
 
 .singlePostEdit {
@@ -62,4 +95,30 @@
   font-size: 30px;
   font-weight: 600;
 
+}
+
+.singlePostDescInput {
+  border: none;
+  color: #666;
+  font-size: 18px;
+  line-height: 25px;
+  height: 300px;
+
+  /* Hide both horizontal and vertical scrollbars */
+  position: relative;
+  /* Required for pseudo-element scrollbar customization */
+}
+
+.singlePostDescInput::-webkit-scrollbar {
+  width: 0.5em;
+  /* Set the width of the custom scrollbar */
+}
+
+.singlePostDescInput::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  /* Set the color of the scrollbar thumb */
+}
+
+.singlePostDescInput:focus {
+  outline: none
 }

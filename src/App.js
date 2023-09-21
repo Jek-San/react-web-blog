@@ -12,7 +12,7 @@ import { loginUser, selectUserData } from "./redux/userSlice";
 import { useEffect } from "react";
 
 
-const user = true;
+
 // const Layout = () => {
 
 
@@ -94,6 +94,12 @@ function App() {
             path="/login"
             element={(
               userData ? <Home /> :
+                <Login />)}
+          />
+          <Route
+            path="/settings"
+            element={(
+              userData ? <Settings /> :
                 <Login />)}
           />
         </Routes>

@@ -10,6 +10,7 @@ import {
 } from "../../redux/userSlice"
 
 export default function TopBar() {
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER
   const dispatch = useDispatch()
   const userData = useSelector(selectUserData)
   const handleLogout = (e) => {
@@ -58,11 +59,15 @@ export default function TopBar() {
       </div>
       <div className="topRight">
         {userData ? (
-          <img
-            className="topImg"
-            src={userData?.profilePicture}
-            alt="profilPicture"
-          />
+          <Link to={"/settings"}>
+            <img
+              className="topImg"
+              src={
+                userData ? PF + userData?.profilePicture : PF + "noAvatar.png"
+              }
+              alt="profilPicture"
+            />
+          </Link>
         ) : (
           <ul className="topList">
             <li className="topListItem">
